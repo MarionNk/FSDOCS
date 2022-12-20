@@ -1,0 +1,54 @@
+﻿@inject IUserService userservice
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudText>L'affectation du groupe à l'utilisateur se fait apres sa création</MudText>
+        <MudTextField @bind-Value="ar.Userid" Label="Pseudo" Variant="Variant.Outlined"  />
+        <MudTextField  @bind-Value="ar.Password" Label="Mot de passe" Variant="Variant.Outlined" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Annuler</MudButton>
+        <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="@Create">
+            @if (loading)
+            {
+                <MudProgressCircular Class="me-2 text-white" Size="Size.Small" Indeterminate="true" />
+            }
+            Ajouter
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+    bool loading { get; set; }
+
+    public AuthenticateRequest ar { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ar = new AuthenticateRequest { Userid = "", Password = "" };
+    }
+    private async Task Create(){
+        loading = true;
+        bool created = await userservice.CreateUser(ar);
+
+        Snackbar.Configuration.SnackbarVariant = Variant.Filled;
+        Snackbar.Configuration.MaxDisplayedSnackbars = 5;
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopRight;
+        if (created)
+        {
+            loading = false;
+            Snackbar.Add("La création à réussit", Severity.Success);
+        }
+        else
+        {
+            loading = false;
+            Snackbar.Add("La création à échouée", Severity.Error);
+        }
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+}

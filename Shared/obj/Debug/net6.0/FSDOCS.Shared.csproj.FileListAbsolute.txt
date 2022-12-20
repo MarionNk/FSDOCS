@@ -1,0 +1,12 @@
+C:\Users\Marion Nkuekam\source\repos\FSDOCS\Shared\bin\Debug\net6.0\FSDOCS.Shared.deps.json
+C:\Users\Marion Nkuekam\source\repos\FSDOCS\Shared\bin\Debug\net6.0\FSDOCS.Shared.dll
+C:\Users\Marion Nkuekam\source\repos\FSDOCS\Shared\bin\Debug\net6.0\FSDOCS.Shared.pdb
+C:\Users\Marion Nkuekam\source\repos\FSDOCS\Shared\obj\Debug\net6.0\FSDOCS.Shared.csproj.AssemblyReference.cache
+C:\Users\Marion Nkuekam\source\repos\FSDOCS\Shared\obj\Debug\net6.0\FSDOCS.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Marion Nkuekam\source\repos\FSDOCS\Shared\obj\Debug\net6.0\FSDOCS.Shared.AssemblyInfoInputs.cache
+C:\Users\Marion Nkuekam\source\repos\FSDOCS\Shared\obj\Debug\net6.0\FSDOCS.Shared.AssemblyInfo.cs
+C:\Users\Marion Nkuekam\source\repos\FSDOCS\Shared\obj\Debug\net6.0\FSDOCS.Shared.csproj.CoreCompileInputs.cache
+C:\Users\Marion Nkuekam\source\repos\FSDOCS\Shared\obj\Debug\net6.0\FSDOCS.Shared.dll
+C:\Users\Marion Nkuekam\source\repos\FSDOCS\Shared\obj\Debug\net6.0\refint\FSDOCS.Shared.dll
+C:\Users\Marion Nkuekam\source\repos\FSDOCS\Shared\obj\Debug\net6.0\FSDOCS.Shared.pdb
+C:\Users\Marion Nkuekam\source\repos\FSDOCS\Shared\obj\Debug\net6.0\ref\FSDOCS.Shared.dll

@@ -1,0 +1,46 @@
+﻿@page "/users"
+
+@inherits IndexBase
+
+<PageTitle>Utilisateurs</PageTitle>
+<MudText Typo="Typo.h3" GutterBottom="true">Utilisateurs</MudText>
+<MudText>Liste d'utilisateurs de FSDOCS</MudText>
+<MudGrid Justify="Justify.FlexEnd" Class="mb-2">
+    <MudButton Color="Color.Primary" Class="mx-5 mx-lg-0" @onclick="()=>OpenDialog(1,null)" EndIcon="@Icons.Material.Filled.AddCircle" Variant="Variant.Filled" >Nouveau</MudButton>
+</MudGrid>
+@if (users==null)
+{
+    <MudGrid Justify="Justify.Center" Class="mt-3 row">
+        <MudSkeleton Class="mx-1 my-2 col-lg-3 col-md-5 col-sm-8 mx-sm-2 col-10" SkeletonType="SkeletonType.Rectangle" Height="200px" />
+        <MudSkeleton Class="mx-1 my-2 col-lg-3 col-md-5 col-sm-8 mx-sm-2 col-10" SkeletonType="SkeletonType.Rectangle" Height="200px" />
+        <MudSkeleton Class="mx-1 my-2 col-lg-3 col-md-5 col-sm-8 mx-sm-2 col-10" SkeletonType="SkeletonType.Rectangle" Height="200px" />
+    </MudGrid>
+}
+else
+{
+    <div class="row d-flex justify-content-center">
+        @foreach (var item in users)
+        {
+            <MudCard Class="col-11 mb-4 col-md-4 col-sm-5 col-lg-3 mx-2">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        
+                        <MudText Typo="Typo.h6"><MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Default" /> @item.UserID</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <!--<MudIconButton Icon="@Icons.Material.Filled.Person" Color="Color.Default"/>-->
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText>Role</MudText>
+                    <MudText Typo="Typo.body1">@item?.Groupe?.Intitule</MudText>
+                </MudCardContent>
+                <MudCardActions Class="d-flex justify-content-end">
+                    <MudIconButton Class="rounded-circle mud-elevation-13 mx-2" @onclick="()=>OpenDialog(2,item)" Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.EditNote" Color="Color.Warning" />
+                    <MudIconButton Class="rounded-circle mud-elevation-13" @onclick="()=>OpenDialog(3,item)" Variant="Variant.Filled" Size="Size.Small" Icon="@Icons.Material.Filled.Delete" Color="Color.Error" />
+                </MudCardActions>
+            </MudCard>
+        }
+    </div>
+}
+

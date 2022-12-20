@@ -1,0 +1,57 @@
+﻿@inject IUploadService uploadservice
+
+<MudDialog>
+    <DialogContent>
+    <MudText Typo="Typo.h5" Class="mx-5" GutterBottom="true">Echecs d'importation du @DateTime.Now</MudText>
+    @if (FailedUp == null)
+    {
+        <MudGrid Justify="Justify.Center">
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Class="col-9 col-lg-11  mt-2" Height="50px" />
+        </MudGrid>
+    }
+    else{
+        <MudTable Items="@FailedUp" Dense="true" Class="mx-5" FixedHeader="true" FixedFooter="true" Hover="true" Striped="true" Height="250px" SortLabel="Sort By">
+
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Etudiants Préinscrits à la FS</MudText>
+            </ToolBarContent>
+        
+            <HeaderContent>
+                <MudTh><MudTableSortLabel SortBy="new Func<UploadFailedGet, object>(x=>x.CodePreinscription)"><b>No PREINSCRIPTION</b></MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<UploadFailedGet, object>(x=>x.Noms)"><b>NOMS</b></MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<UploadFailedGet, object>(x=>x.Prenoms)"><b>PRENOMS</b></MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<UploadFailedGet, object>(x=>x.CodeEtape)"><b>ETAPE</b></MudTableSortLabel></MudTh>
+                <MudTh><MudTableSortLabel SortBy="new Func<UploadFailedGet, object>(x=>x.CodeAA)"><b>ANNEE ACAD</b></MudTableSortLabel></MudTh>
+            
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Numpreins">@context.CodePreinscription</MudTd>
+                <MudTd DataLabel="Nom">@context.Noms</MudTd>
+                <MudTd DataLabel="Prenom">@context.Prenoms</MudTd>
+                <MudTd DataLabel="Etape">@context.CodeEtape</MudTd>
+                <MudTd DataLabel="AA">@context.CodeAA</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager Style="font-weight:bold" PageSizeOptions="new int[]{1,10, 25, 50, 100}" />
+            </PagerContent>
+        </MudTable>
+    }
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Annuler</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+    private IEnumerable<UploadFailedGet> FailedUp { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        FailedUp = await uploadservice.GetFUbyDate();
+    }
+}

@@ -1,0 +1,34 @@
+﻿@inject Blazored.SessionStorage.ISessionStorageService sessionstorage
+
+<MudNavMenu Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Bordered="true" Class="pa-2">
+    <MudNavLink Href="home" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home"><MudText Style="font-weight:bold" Typo="Typo.button">Acceuil</MudText></MudNavLink>
+    @if(@listroles!=null){
+        @if(@listroles.Contains("Documents"))
+        {
+            <MudNavLink Href="documents" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.FileOpen"><MudText Style="font-weight:bold" Typo="Typo.button">Documents</MudText></MudNavLink>
+        }
+        @if(@listroles.Contains("GroupesRoles"))
+        {
+            <MudNavLink Href="groupesroles" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.SettingsAccessibility"><MudText Style="font-weight:bold" Typo="Typo.button">Groupes & Roles</MudText></MudNavLink>
+        }
+        @if(@listroles.Contains("Importation"))
+        {
+            <MudNavLink Href="uploaddb" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.FileUpload"><MudText Style="font-weight:bold" Typo="Typo.button">ImportBD</MudText></MudNavLink>
+        }
+        @if(@listroles.Contains("Users"))
+        {
+            <MudNavLink Href="users" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Group"><MudText Style="font-weight:bold" Typo="Typo.button">Utilisateurs</MudText></MudNavLink>
+        }
+    }
+    
+    
+</MudNavMenu>
+
+@code{
+    public List<string> listroles{ get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        listroles = await sessionstorage.GetItemAsync<List<string>>("Roles");
+    }
+}

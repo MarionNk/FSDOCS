@@ -1,0 +1,87 @@
+﻿@inject IUserService userservice
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        @if (selected != null && selected.Length > 0)
+        {
+            <MudText>You selected @string.Join(", ", selected.Select(chip=>chip.Text)).</MudText>
+        }
+        else
+        {
+            <MudText>Nothing selected.</MudText>
+        }
+        <MudTextField Label="Code Groupe" Value="@editgroupe.codegroupe" Variant="Variant.Outlined" Disabled />
+        <MudChipSet @bind-SelectedChips="selected" MultiSelection="true" Filter=true>
+            <MudText>Attribuez des roles au groupe en cliquant pour selectionner</MudText>
+            @if(roles!=null){
+                @foreach (var item in roles)
+                {
+                    <MudChip Text="@item.CodeRole" Variant="Variant.Text" Color="Color.Success">@item.Intitule</MudChip><br/>
+                }    
+            }
+        </MudChipSet>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Annuler</MudButton>
+        <MudButton Color="Color.Warning" Variant="Variant.Filled" OnClick="@Edit">
+            @if (loading)
+            { 
+                <MudProgressCircular Class="me-2 text-white" Size="Size.Small" Indeterminate="true" />
+            }
+            Modifier
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+    bool loading { get; set; }
+    [Parameter] public GroupeRole editgroupe { get; set; }
+
+    public IEnumerable<Role> roles { get; set; }
+    MudChip[] selected;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        roles = await userservice.GetRoles();
+    }
+
+    private async Task Edit()
+    {
+        var rolesCode = new List<String>();
+        @if (selected != null && selected.Length > 0)
+        {
+            foreach (var item in selected.Select(chip => chip.Text))
+            {
+               rolesCode.Add(item.ToString());
+            }
+        }
+        else
+        {
+            //list of codes is empty
+        }
+        loading = true;
+        bool updated = await userservice.UpdateGroupRole(editgroupe.codegroupe, rolesCode);
+
+        Snackbar.Configuration.SnackbarVariant = Variant.Filled;
+        Snackbar.Configuration.MaxDisplayedSnackbars = 5;
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopRight;
+        if (updated)
+        {
+            loading = false;
+            Snackbar.Add("La MAJ à réussit", Severity.Success);
+        }
+        else
+        {
+            loading = false;
+            Snackbar.Add("La MAJ à échouée", Severity.Error);
+        }
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+}

@@ -1,0 +1,50 @@
+﻿@inject IUserService userservice
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudText>Etes-vous sur de vouloir supprimer cet utilisateur?</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Annuler</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="@Delete">
+            @if (loading)
+            {
+                <MudProgressCircular Class="me-2 text-white" Size="Size.Small" Indeterminate="true" />
+            }
+            Supprimer
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public UserGet user { get; set; } = null;
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+    bool loading { get; set; }
+
+
+    private async Task Delete()
+    {
+        loading = true;
+        bool deleted = await userservice.DeleteUser(user.UserID);
+
+        Snackbar.Configuration.SnackbarVariant = Variant.Filled;
+        Snackbar.Configuration.MaxDisplayedSnackbars = 5;
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopRight;
+        if (deleted)
+        {
+            loading = false;
+            Snackbar.Add("La suppression à réussit", Severity.Success);
+        }
+        else
+        {
+            loading = false;
+            Snackbar.Add("La suppression à échouée", Severity.Error);
+        }
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+}

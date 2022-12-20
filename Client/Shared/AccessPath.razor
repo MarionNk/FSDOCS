@@ -1,0 +1,81 @@
+﻿@inject IParamService ParamService
+
+<MudDialog>
+    <DialogContent>
+        <h5>Path: @path</h5>
+        <MudText>@tr</MudText>
+        <MudForm Class="row mx-1" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+            
+            <MudTextField Class="col-9" T="string" Label="Accesspath" 
+                                     HelperText="Veuillez renseigner un chemin absolu" 
+                                     Required="true"
+                                     Placeholder="ex. E:\Dossier\Dossier"
+                                     RequiredError="Ce champ est requis!"
+                                     Variant="Variant.Outlined"
+                                     Validation="@(new Func<string?, IEnumerable<string>>(testAbsolute))"
+                                     @ref="newac" />
+            <div class="col-2">
+                 <MudIconButton 
+                Icon="@Icons.Material.Filled.Check"
+                OnClick=@getPath 
+                Class="rounded-circle mt-4 mud-elevation-13" 
+                Variant="Variant.Filled" 
+                Color="Color.Primary" 
+                Size="Size.Medium" />
+            </div>
+             
+         </MudForm> 
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    //dialog
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+    //
+    private string? path{ get; set; }
+    private bool tr{ get; set; }
+    [Inject] public IParamService paramservice{ get; set; }
+
+    //form
+    bool success;
+    string[] errors = { };
+    MudTextField<string>? newac;
+    MudForm? form;
+    private bool submit { get; set; }
+
+
+    private async Task getPath()
+    {
+        if (!string.IsNullOrWhiteSpace(newac.Value) && submit)
+        {
+            tr = await ParamService.CreateAP(newac.Value);
+        }
+    }
+    private IEnumerable<string> testAbsolute(string? path)
+    {
+        if (!string.IsNullOrWhiteSpace(path))
+        {
+            if (!(path.Split(":\\")[0].Length == 1 && path.Contains(":\\")))
+                yield return "Merci d'entrer un chemin absolu vers un dossier visé (ex. E:\\Dossier\\Dossier)";
+
+            else
+                submit = true;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        submit = false;
+        tr = true;
+        path = await ParamService.GetAccessPath();
+    }
+}
+

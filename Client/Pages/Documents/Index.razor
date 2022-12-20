@@ -1,0 +1,51 @@
+﻿@page "/documents"
+@using FSDOCS.Shared.DataTransferObjects
+@inherits IndexBase
+
+<PageTitle>Documents</PageTitle>
+<MudText Typo="Typo.h3" GutterBottom="true">Documents </MudText>
+@if(Preins == null)
+{
+    <MudGrid Justify="Justify.Center">
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Class="col-11" Height="50px" />
+    </MudGrid>
+}
+else{
+    <MudTable Items="@Preins" Dense="true" Filter="new Func<PreinsGet,bool>(FilterFunc1)" FixedHeader="true" FixedFooter="true" Hover="true" Striped="true" Height="280px" SortLabel="Sort By">
+
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Etudiants Préinscrits à la FS</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString1" Placeholder="Rechercher" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<PreinsGet, object>(x=>x.CodePreinscription)"><b>No PREINSCRIPTION</b></MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel Enabled="@enabled" SortBy="new Func<PreinsGet, object>(x=>x.Matricule)"><b>MATRICULE</b></MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<PreinsGet, object>(x=>x.Etudiant.Noms)"><b>NOMS</b></MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<PreinsGet, object>(x=>x.Etudiant.Prenoms)"><b>PRENOMS</b></MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<PreinsGet, object>(x=>x.CodeEtape)"><b>ETAPE</b></MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<PreinsGet, object>(x=>x.CodeAA)"><b>ANNEE ACAD</b></MudTableSortLabel></MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Numpreins">@context.CodePreinscription</MudTd>
+            <MudTd DataLabel="Matricule">@context.Matricule</MudTd>
+            <MudTd DataLabel="Nom">@context.Etudiant.Noms</MudTd>
+            <MudTd DataLabel="Prenom">@context.Etudiant.Prenoms</MudTd>
+            <MudTd DataLabel="Etape">@context.CodeEtape</MudTd>
+            <MudTd DataLabel="AA">@context.CodeAA</MudTd>
+            <MudTd >
+                <MudIconButton OnClick="()=>Gotodocs(context.CodePreinscription)" Icon="@Icons.Material.Filled.FolderShared" Class="rounded-circle mud-elevation-13" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" />
+                
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager Style="font-weight:bold" PageSizeOptions="new int[]{1,10, 25, 50, 100}" />
+        </PagerContent>
+    </MudTable>
+}
+@code{
+    
+}
+

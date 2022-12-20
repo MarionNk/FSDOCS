@@ -1,0 +1,75 @@
+﻿@inherits LayoutComponentBase
+@inject IDialogService DialogService
+@inject Blazored.SessionStorage.ISessionStorageService sessionstorage
+
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode"/>
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0" Dense="true">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer  />
+        <MudText>@Text</MudText>
+        <MudMenu Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" Dense="true">
+            <!--<MudMenuItem><MudIcon Icon="@Icons.Filled.Person" Color="Color.Dark" /> Profile</MudMenuItem>
+            <MudMenuItem @onclick="OpenDialog"><MudIcon Icon="@Icons.Filled.AccessibilityNew" Color="Color.Dark" /> Chemin d'accès</MudMenuItem>-->
+            <MudMenuItem OnClick="@Deconnect" Href="/"><MudIcon Icon="@Icons.Filled.Logout" Color="Color.Dark" /> Déconnexion</MudMenuItem>
+        </MudMenu>
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
+        <MudDrawerHeader>
+            <MudAvatar Size="Size.Medium" Image="css/images/UDLogo.jpg" />
+            <MudAvatar Size="Size.Medium" Image="css/images/LOGOFS-removebg-preview.png" />
+            <MudText Typo="Typo.h6" Style="font-weight:bold;" Class="py-1 mx-3">FSDOCS</MudText>
+        </MudDrawerHeader>
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-5">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = true;
+
+    public string Text;
+    protected override async Task OnInitializedAsync()
+    {
+        Text = await sessionstorage.GetItemAsync<string>("Userid") + " - " + await sessionstorage.GetItemAsync<string>("Group");
+    }
+
+    private bool _isDarkMode;
+    private MudThemeProvider _mudThemeProvider;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+            StateHasChanged();
+        }
+    }
+    async Task Deconnect(){
+        await sessionstorage.ClearAsync();
+    }
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+    private void OpenDialog()
+    {
+        var options = new DialogOptions { 
+            CloseOnEscapeKey = true,
+            FullWidth=true,
+            MaxWidth=MaxWidth.Small,
+            CloseButton=true,
+            DisableBackdropClick=true,
+            NoHeader=false,
+            Position=DialogPosition.TopCenter
+        };
+        DialogService.Show<AccessPath>("Chemin d'accès", options);
+    }
+}

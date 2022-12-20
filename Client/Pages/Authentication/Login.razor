@@ -1,0 +1,81 @@
+﻿@page "/"
+@layout LoginLayout
+@inject IAuthenticateService authenticationservice
+@inject NavigationManager NavigationManager
+
+<MudGrid Justify="Justify.Center">
+    <MudPaper Class="py-16 px-6 ma-2 pt-3 col-9 col-sm-7 col-md-4 col-lg-3" Elevation="2">
+        <MudGrid Justify="Justify.Center">
+            <MudAvatar Size="Size.Large" Image="css/images/UDLogo.jpg" />
+            <MudAvatar Size="Size.Large" Image="css/images/LOGOFS-removebg-preview.png" />
+        </MudGrid>
+        <MudGrid Justify="Justify.Center">
+            <MudText Typo="Typo.h4" Style="font-weight:bold;" Class="py-1 m-2 mb-5">FSDOCS</MudText>
+        </MudGrid>
+        <MudGrid Justify="Justify.Center">
+            <MudText Class="mb-3">Connectes-toi pour continuer</MudText>
+        </MudGrid>
+        
+        <MudForm Class="row mx-1" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+
+            <MudTextField T="string" Label="Pseudo"
+                          Required="true"
+                          Placeholder=""
+                          Adornment="Adornment.End"
+                          Margin="Margin.Dense"
+                          Class="rounded-3 mb-2"
+                          AdornmentIcon="@Icons.Filled.Person"
+                          AdornmentColor="Color.Primary"
+                          RequiredError="Ce champ est requis!"
+                          Variant="Variant.Text"
+                          @ref="pseudo" />
+            <MudTextField T="string"
+                          Label="Password"
+                          Margin="Margin.Dense"
+                          InputType="InputType.Password"
+                          Required="true"
+                          Placeholder=""
+                          Class="rounded-3 mb-10"
+                          Adornment="Adornment.End"
+                          AdornmentIcon="@Icons.Filled.Key"
+                          AdornmentColor="Color.Primary"
+                          RequiredError="Ce champ est requis!"
+                          Variant="Variant.Text"
+                          @ref="password" />
+            <MudButton Variant="Variant.Filled" OnClick=@Authenticate Size="Size.Medium" Class="rounded-3 mt-5 " Color="Color.Primary" EndIcon="@Icons.Material.Filled.Login" FullWidth="true">
+                @if (login)
+                {
+                    <MudProgressCircular Class="me-2 text-white" Size="Size.Small" Indeterminate="true" />
+                }
+                Connexion</MudButton>
+
+        </MudForm>
+
+    </MudPaper>
+</MudGrid>
+@code {
+
+    //form
+    bool success;
+    string[] errors = { };
+    MudTextField<string>? pseudo;
+    MudTextField<string>? password;
+    bool login;
+    MudForm? form;
+
+    private async Task Authenticate()
+    {
+        login = true;
+        var a = new AuthenticateRequest() { Userid = pseudo.Value, Password = password.Value };
+        if (await authenticationservice.authenticate(a))
+        {
+            login = false;
+            NavigationManager.NavigateTo($"/home");
+        }
+        else
+        {
+            login = false;
+        }
+    }
+
+}

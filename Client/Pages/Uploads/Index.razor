@@ -1,0 +1,47 @@
+﻿@page "/uploaddb"
+
+@inherits IndexBase
+
+<PageTitle>Importation</PageTitle>
+<MudText Typo="Typo.h3" GutterBottom="true">Importation BD</MudText>
+<MudText>Mettez à jour les données des étudiants ici !!</MudText>
+
+<MudGrid Justify="Justify.Center" Class="mt-3">
+    <MudGrid Justify="Justify.FlexEnd" Class="mx-lg-6 mb-2">
+        <MudBadge Color="Color.Error" Overlap="true" Bordered="true" Class="mx-7 my-1">
+            <MudButton Color="Color.Primary" @onclick="@OpenDialog" Variant="Variant.Filled">Echecs</MudButton>
+        </MudBadge>
+    </MudGrid>
+    <MudCard Class="mx-4 my-2" Style="height:300px;width:400px;">
+        <MudCardContent Class="d-flex justify-content-center">
+            <MudImage Style="max-height:220px;max-width:220px;" Src="css/images/import.svg" Alt="" Class="rounded-lg " />
+        </MudCardContent>
+        <MudCardActions Class="d-flex justify-content-center">
+            <MudFileUpload T="IBrowserFile" OnFilesChanged="@UploadFile" Accept=".xlsx" MaximumFileCount="1">
+                <ButtonTemplate>
+                    <MudButton HtmlTag="label"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               EndIcon="@Icons.Filled.UploadFile"
+                               for="@context">
+                        @if (loading)
+                        {
+                            <MudProgressCircular Class="me-2 text-white" Size="Size.Small" Indeterminate="true" />
+                        }
+                        Importer le fichier Excel
+                    </MudButton>
+                </ButtonTemplate>
+            </MudFileUpload>
+        </MudCardActions>
+        
+    </MudCard>
+    <MudCard Class="mx-4 my-2" Style="height:300px;width:400px;">
+        <MudCardContent Class="d-flex justify-content-center">
+            <MudImage Style="max-height:170px;max-width:170px;" Src="css/images/export.svg" Alt="" Class="rounded-lg" />
+        </MudCardContent>
+        <MudCardActions Class="d-flex justify-content-center">
+            <MudButton Variant="Variant.Filled" href="maskUploadFSDOCS.xlsx" EndIcon="@Icons.Material.Filled.FileDownload" Color="Color.Primary" download>Telecharger le masque</MudButton>
+            
+        </MudCardActions>
+    </MudCard>
+</MudGrid>
